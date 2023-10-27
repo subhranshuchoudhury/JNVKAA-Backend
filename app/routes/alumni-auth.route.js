@@ -1,4 +1,4 @@
-const { validateUser } = require("../middlewares");
+const { validateUser, authJwt } = require("../middlewares");
 const controller = require("../controllers/alumni-auth.controller");
 
 module.exports = function (app) {
@@ -13,8 +13,7 @@ module.exports = function (app) {
   // * define routes here.
   app.post(
     "/api/user/auth/register",
-    [validateUser.validateRegister],
-    [validateUser.checkDuplicateMobile],
+    [validateUser.validateRegister, validateUser.checkDuplicateMobile],
     controller.userRegister
   );
 
@@ -40,5 +39,12 @@ module.exports = function (app) {
     "/api/user/auth/forget-password",
     [validateUser.validateForgetPassword],
     controller.forgetPasswordUser
+  );
+
+  app.post(
+    "/api/user/auth/change-password",
+    [authJwt.verifyToken],
+    [validateUser.changePassword],
+    controller.changePasswordUser
   );
 };

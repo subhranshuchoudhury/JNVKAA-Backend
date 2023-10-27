@@ -2,7 +2,6 @@ const config = require("../config/auth.config");
 const db = require("../models");
 const Alumni = db.alumni;
 const Role = db.role;
-const Referral = db.referral;
 const otpGenerator = require("otp-generator");
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
@@ -45,7 +44,7 @@ const sendSMS = async (mobile, otp) => {
 exports.userRegister = async (req, res) => {
   const alumni = new Alumni({
     name: req.body.name,
-    password: req.body.password,
+    password: bcrypt.hashSync(req.body.password, 8),
     mobile: req.body.mobile,
     verified: false,
     tempOTP: {
@@ -74,27 +73,23 @@ exports.userLogin = async (req, res) => {
       mobile: req.body.mobile,
     }).populate("roles", "-__v");
 
-    if (alumni?.isBanned) {
-      return res.status(403).send({
-        accessToken: null,
-        message: "Account banned!",
-      });
-    }
-
     if (alumni) {
-      const passwordIsValid = req.body.password === alumni.password;
+      const passwordIsValid = bcrypt.compareSync(
+        req.body.password,
+        alumni.password
+      );
 
       if (!alumni.verified) {
         return res.status(301).send({
           accessToken: null,
-          message: "Account not verified!",
+          message: "Account not verified",
         });
       }
 
       if (!passwordIsValid) {
         return res.status(401).send({
           accessToken: null,
-          message: "Invalid Password!",
+          message: "Incorrect Password",
         });
       }
 
@@ -188,7 +183,7 @@ exports.sendOTPUser = async (req, res) => {
   try {
     const alumni = await Alumni.findOne({
       mobile: req.body.mobile,
-    }).select("tempOTP mobile");
+    }).select("tempOTP");
 
     if (!alumni) {
       return res.status(404).send({ message: "Alumni not found" });
@@ -222,7 +217,7 @@ exports.sendOTPUser = async (req, res) => {
     alumni.tempOTP.otp = bcrypt.hashSync(OTP, 8);
     alumni.tempOTP.createdAt = new Date();
 
-    const smsResp = await sendSMS(alumni.mobile, OTP);
+    const smsResp = await sendSMS(req.body.mobile, OTP);
 
     if (smsResp === 400) {
       res.status(500).send({ message: "Error sending OTP" });
@@ -240,15 +235,18 @@ exports.sendOTPUser = async (req, res) => {
 };
 
 exports.forgetPasswordUser = async (req, res) => {
+  console.log(req.body);
   try {
-    const alumni = await Alumni.findOne({ mobile: req.body.mobile });
+    const alumni = await Alumni.findOne({ mobile: req.body.mobile }).select(
+      "tempOTP password "
+    );
     if (!alumni) {
       res.status(404).send({ message: "Alumni not found" });
       return;
     }
 
     if (!alumni.tempOTP.otp) {
-      res.status(400).send({ message: "OTP not sent. Please send OTP first" });
+      res.status(400).send({ message: "Please send OTP first" });
       return;
     }
 
@@ -273,32 +271,35 @@ exports.forgetPasswordUser = async (req, res) => {
 
     alumni.tempOTP.otp = null;
     alumni.tempOTP.createdAt = null;
-    alumni.password = req.body.password;
+    alumni.password = bcrypt.hashSync(req.body.password, 8);
     await alumni.save();
 
     res.status(200).send({ message: "Password updated successfully" });
   } catch (error) {
     console.log(error);
-    res.status(500).send({ message: error });
+    res.status(500).send({ message: "Server failure" });
     return;
   }
 };
 
 exports.changePasswordUser = async (req, res) => {
   try {
-    const alumni = await Alumni.findById(req.userId);
+    const alumni = await Alumni.findById(req.userId).select("password");
     if (!alumni) {
       res.status(404).send({ message: "Alumni not found" });
       return;
     }
 
-    const passwordIsValid = req.body.oldPassword === alumni.password;
+    const passwordIsValid = bcrypt.compareSync(
+      req.body.oldPassword,
+      alumni.password
+    );
 
     if (!passwordIsValid) {
       return res.status(401).send({ message: "Invalid old password" });
     }
 
-    alumni.password = req.body.newPassword;
+    alumni.password = bcrypt.hashSync(req.body.newPassword, 8);
     await alumni.save();
 
     res.status(200).send({ message: "Password updated successfully" });
