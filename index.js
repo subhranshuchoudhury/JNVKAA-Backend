@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const bodyParser = require("body-parser");
 require("dotenv").config();
 const cors = require("cors");
 // * Cors
@@ -16,16 +17,16 @@ app.use(cors());
 
 // * receive JSON parsed body
 
-app.use(express.json({ limit: "1mb" }));
-
-// * creating clusters to utilize CPUs.
+// for parsing application/json
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 const db = require("./app/models");
 const Role = db.role;
 
 app.get("/", (req, res) => {
   res.json({
-    message: [{}],
+    message: [{ owner: "JNVKAA" }],
   });
 });
 
@@ -99,6 +100,8 @@ db.mongoose
 // * routes
 
 require("./app/routes/alumni-auth.route")(app);
+require("./app/routes/moderator-auth.route")(app);
+require("./app/routes/post.route")(app);
 
 const PORT = process.env.PORT || 5000;
 

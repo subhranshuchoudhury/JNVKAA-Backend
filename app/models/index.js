@@ -7,6 +7,8 @@ db.mongoose = mongoose;
 db.moderator = require("./moderator.model");
 db.alumni = require("./alumni.model");
 db.role = require("./role.model");
+db.post = require("./post.model");
+db.carousal = require("./carousal.model");
 db.ROLES = ["user", "admin", "moderator"];
 
 module.exports = db;

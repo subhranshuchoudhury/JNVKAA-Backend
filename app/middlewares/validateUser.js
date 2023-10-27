@@ -34,7 +34,7 @@ const validateLogin = (req, res, next) => {
         .string()
         .length(10)
         .regex(/^[0-9]+$/),
-      password: z.string().min(6).max(20),
+      password: z.string().min(6),
     })
     .strict();
   const result = schema.safeParse(req.body);
