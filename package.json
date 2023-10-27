@@ -1,0 +1,29 @@
+{
+  "name": "colorprediction",
+  "version": "1.0.0",
+  "description": "This is the frontend code for color prediction application, a gambling application.",
+  "main": "index.js",
+  "engines": {
+    "node": "18.x"
+  },
+  "author": "Subhranshu Choudhury",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^7.5.0",
+    "node-schedule": "^2.1.1",
+    "otp-generator": "^4.0.1",
+    "zod": "^3.22.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
