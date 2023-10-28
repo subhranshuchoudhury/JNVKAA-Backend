@@ -19,6 +19,26 @@ module.exports = function (app) {
 
   app.get("/api/post/latest", [authJwt.verifyToken], controller.getLatestPosts);
 
+  app.get(
+    "/api/post/search/query",
+    [authJwt.verifyToken],
+    controller.getPostSearch
+  );
+
+  app.get("/api/post/:id", [authJwt.verifyToken], controller.getPostById);
+
+  app.delete(
+    "/api/user/post/delete",
+    [authJwt.verifyToken],
+    controller.deletePost
+  );
+
+  app.delete(
+    "/api/moderator/post/delete",
+    [authJwt.verifyToken, authJwt.isModerator],
+    controller.deletePostByModerator
+  );
+
   app.post(
     "/api/moderator/carousal/create",
     [authJwt.verifyToken, authJwt.isModerator],
@@ -26,4 +46,10 @@ module.exports = function (app) {
   );
 
   app.get("/api/carousal/latest", controller.getCarousal);
+
+  app.delete(
+    "/api/moderator/carousal/delete",
+    [authJwt.verifyToken, authJwt.isModerator],
+    controller.deleteCarousal
+  );
 };

@@ -4,9 +4,10 @@ const Post = db.post;
 const Carousal = db.carousal;
 process.env.TZ = "Asia/Kolkata";
 const multer = require("multer");
-const Moderator = require("../models/moderator.model");
-
+// const Moderator = require("../models/moderator.model");
 const uploadImage = multer().single("image");
+
+// user create post
 
 exports.createPostAlumni = async (req, res) => {
   uploadImage(req, res, async (err) => {
@@ -62,6 +63,8 @@ exports.createPostAlumni = async (req, res) => {
   });
 };
 
+// get latest posts
+
 exports.getLatestPosts = async (req, res) => {
   try {
     const posts = await Post.find()
@@ -74,6 +77,63 @@ exports.getLatestPosts = async (req, res) => {
     return res.status(500).send({ message: "Server failure" });
   }
 };
+
+// get post by id
+
+exports.getPostById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const post = await Post.findById(id);
+    if (!post) {
+      return res.status(404).send({ message: "Post not found" });
+    }
+    post.views += 1;
+    await post.save();
+    return res.status(200).send(post);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({ message: "Server failure" });
+  }
+};
+
+// get post by search
+
+exports.getPostSearch = async (req, res) => {
+  try {
+    const posts = await Post.find({
+      $or: [
+        { title: { $regex: `^${req.query?.title}`, $options: "i" } }, // * i : non-case sensitive
+        {
+          description: { $regex: `^${req.query?.description}`, $options: "i" },
+        },
+        {
+          "author.name": {
+            $regex: `^${req.query?.author}`,
+            $options: "i",
+          },
+        },
+
+        {
+          hashtag: {
+            $elemMatch: {
+              $regex: `^${req.query?.hashtag}`,
+              $options: "i",
+            },
+          },
+        },
+      ],
+    })
+      .sort({ timestamp: -1 })
+      .select("author title date views hashtag");
+
+    return res.status(200).send(posts);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({ message: "Server failure" });
+  }
+};
+
+// user post carousal
 
 exports.postCarousal = async (req, res) => {
   uploadImage(req, res, async (err) => {
@@ -120,6 +180,45 @@ exports.postCarousal = async (req, res) => {
   });
 };
 
+// user delete post
+
+exports.deletePost = async (req, res) => {
+  try {
+    const { id } = req.body;
+    const post = await Post.findById(id).select("author");
+    if (!post) {
+      return res.status(404).send({ message: "Post not found" });
+    }
+    if (post.author.id.toString() !== req.userId) {
+      return res.status(401).send({ message: "Unauthorized" });
+    }
+    await post.deleteOne();
+    return res.status(200).send({ message: "Post deleted successfully" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({ message: "Server failure" });
+  }
+};
+
+// delete post by moderator
+
+exports.deletePostByModerator = async (req, res) => {
+  try {
+    const { id } = req.body;
+    const post = await Post.findById(id).select("author");
+    if (!post) {
+      return res.status(404).send({ message: "Post not found" });
+    }
+    await post.deleteOne();
+    return res.status(200).send({ message: "Post deleted successfully" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({ message: "Server failure" });
+  }
+};
+
+// get carousal posts
+
 exports.getCarousal = async (req, res) => {
   try {
     const posts = await Carousal.find()
@@ -127,6 +226,22 @@ exports.getCarousal = async (req, res) => {
       .limit(5)
       .select("author title image date");
     return res.status(200).send(posts);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({ message: "Server failure" });
+  }
+};
+
+// delete carousal post
+
+exports.deleteCarousal = async (req, res) => {
+  try {
+    const post = await Carousal.findById(req.body.id).select("author");
+    if (!post) {
+      return res.status(404).send({ message: "Post not found" });
+    }
+    await post.deleteOne();
+    return res.status(200).send({ message: "Post deleted successfully" });
   } catch (error) {
     console.log(error);
     return res.status(500).send({ message: "Server failure" });

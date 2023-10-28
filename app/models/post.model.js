@@ -9,6 +9,8 @@ const Post = mongoose.model(
       data: { type: String, required: true },
       contentType: { type: String, required: true },
     },
+    videoLink: { type: String, required: false },
+    youtubeLink: { type: String, required: false },
     links: [
       {
         link: { type: String, required: true },
@@ -22,7 +24,10 @@ const Post = mongoose.model(
       },
     ],
     date: { type: Date, default: Date.now },
-    views: Number,
+    views: {
+      type: Number,
+      default: 1,
+    },
     likes: [
       {
         name: { type: String, required: true },
