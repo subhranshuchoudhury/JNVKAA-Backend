@@ -7,7 +7,7 @@ const Alumni = mongoose.model(
     mobile: { type: String, required: true, unique: true },
     verified: { type: Boolean, default: false },
     password: { type: String, required: true },
-    premiumExpiry: { type: Date, required: null },
+    premiumExpiry: { type: Date, default: Date.now },
     profileDetails: {
       isProfileCompleted: { type: Boolean, default: false },
       profileImage: { type: String, default: null },

@@ -21,4 +21,10 @@ module.exports = function (app) {
     [authJwt.verifyToken],
     controller.alumnusSearchById
   );
+
+  app.get(
+    "/api/alumni/search",
+    [authJwt.verifyToken],
+    controller.getAlumniSearch
+  );
 };
