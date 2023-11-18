@@ -100,6 +100,7 @@ db.mongoose
 // * routes
 
 require("./app/routes/alumni-auth.route")(app);
+require("./app/routes/alumni.route")(app);
 require("./app/routes/moderator-auth.route")(app);
 require("./app/routes/post.route")(app);
 
