@@ -62,3 +62,15 @@ exports.getImage = async (req, res) => {
     return res.status(500).send({ message: "Image processing failed" });
   }
 };
+
+exports.deleteImage = async (req, res) => {
+  try {
+    const id = req.body.id;
+    await Image.findByIdAndDelete(id);
+    return res.status(200).send({ message: "Image deleted successfully" });
+  } catch (error) {
+    return res
+      .status(500)
+      .send({ message: "Deletion failed, try again later" });
+  }
+};
