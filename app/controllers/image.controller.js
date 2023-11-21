@@ -50,15 +50,13 @@ exports.uploadImageServer = async (req, res) => {
 exports.getImage = async (req, res) => {
   try {
     const id = req.params.id;
-    console.log(id);
 
     const doc = await Image.findById(id);
     if (!doc) return res.status(404).send({ message: "Image not found" });
 
     const imageBuffer = Buffer.from(doc.image.data, "base64");
     res.setHeader("Content-Type", doc.image.contentType);
-    console.log(doc);
-    res.send(imageBuffer);
+    return res.send(imageBuffer);
   } catch (error) {
     console.log(error);
     return res.status(500).send({ message: "Image processing failed" });
