@@ -9,6 +9,7 @@ db.alumni = require("./alumni.model");
 db.role = require("./role.model");
 db.post = require("./post.model");
 db.carousal = require("./carousal.model");
+db.image = require("./image.model");
 db.ROLES = ["user", "admin", "moderator"];
 
 module.exports = db;

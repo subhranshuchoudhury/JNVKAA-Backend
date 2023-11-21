@@ -1,6 +1,6 @@
 const { authJwt } = require("../middlewares");
 const controller = require("../controllers/post.controller");
-
+const imageController = require("../controllers/image.controller");
 module.exports = function (app) {
   app.use(function (req, res, next) {
     res.header(
@@ -11,6 +11,14 @@ module.exports = function (app) {
   });
 
   // * define routes here.
+
+  app.post(
+    "/api/user/post/image",
+    [authJwt.verifyToken],
+    imageController.uploadImageServer
+  );
+
+  app.get("/api/user/post/image/:id", imageController.getImage);
   app.post(
     "/api/user/post/create",
     [authJwt.verifyToken],
