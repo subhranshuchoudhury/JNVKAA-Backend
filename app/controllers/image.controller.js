@@ -66,7 +66,8 @@ exports.getImage = async (req, res) => {
 exports.deleteImage = async (req, res) => {
   try {
     const id = req.body.id;
-    await Image.findByIdAndDelete(id);
+    const reqUserId = req.userId;
+    await Image.findOneAndRemove({ _id: id, "image.uploader": reqUserId });
     return res.status(200).send({ message: "Image deleted successfully" });
   } catch (error) {
     return res

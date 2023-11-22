@@ -5,18 +5,10 @@ const Post = mongoose.model(
   new mongoose.Schema({
     title: { type: String, required: true },
     description: { type: String, required: true },
-    image: {
-      data: { type: String, required: true },
-      contentType: { type: String, required: true },
-    },
-    videoLink: { type: String, required: false },
+    imageLink: { type: String, default: null },
+    isYoutube: { type: Boolean, default: false },
     youtubeLink: { type: String, required: false },
-    links: [
-      {
-        link: { type: String, required: true },
-        name: { type: String, required: true },
-      },
-    ],
+    externalLink: { type: String, required: false },
     hashtag: [
       {
         type: String,

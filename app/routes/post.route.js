@@ -27,9 +27,11 @@ module.exports = function (app) {
 
   app.get("/api/post/latest", [authJwt.verifyToken], controller.getLatestPosts);
 
+  app.get("/api/posts", [authJwt.verifyToken], controller.getPosts);
+
   app.delete(
-    "/api/admin/post/image/delete",
-    [authJwt.verifyToken, authJwt.isModerator],
+    "/api/user/post/image/delete",
+    [authJwt.verifyToken],
     imageController.deleteImage
   );
 

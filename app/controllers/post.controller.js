@@ -23,11 +23,14 @@ exports.createPostAlumni = async (req, res) => {
       links: req.body.links,
       hashtag: req.body.hashtag,
       date: req.body.date,
+      imageLink: req.body.imageSrcId,
+      isYoutube: req.body.isYoutube,
+      youtubeLink: req.body.ytLink,
+      externalLink: req.body.externalLink,
     });
     post.author.name = alumni.name;
     post.author.id = req.userId;
-    post.image.data = req.body.imageSource;
-    post.image.contentType = req.file.mimetype;
+
     const posted = await post.save();
     return res
       .status(200)
@@ -45,7 +48,7 @@ exports.getLatestPosts = async (req, res) => {
     const posts = await Post.find()
       .sort({ timestamp: -1 })
       .limit(5)
-      .select("author title image date views");
+      .select("author title imageLink date views");
     return res.status(200).send(posts);
   } catch (error) {
     console.log(error);
@@ -53,6 +56,20 @@ exports.getLatestPosts = async (req, res) => {
   }
 };
 
+exports.getPosts = async (req, res) => {
+  try {
+    const skip = parseInt(req.query.skip) || 0;
+    const posts = await Post.find()
+      .sort({ timestamp: -1 })
+      .limit(10)
+      .skip(skip)
+      .select("author title imageLink date views");
+    return res.status(200).send(posts);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({ message: "Server failure" });
+  }
+};
 // get post by id
 
 exports.getPostById = async (req, res) => {
