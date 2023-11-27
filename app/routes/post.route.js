@@ -25,6 +25,14 @@ module.exports = function (app) {
     controller.createPostAlumni
   );
 
+  app.post(
+    "/api/moderator/post/youtube",
+    [authJwt.verifyToken, authJwt.isModerator],
+    controller.createYoutubePost
+  );
+
+  app.get("/api/post/youtube", controller.getYoutubePosts);
+
   app.get("/api/post/latest", [authJwt.verifyToken], controller.getLatestPosts);
 
   app.get("/api/posts", [authJwt.verifyToken], controller.getPosts);

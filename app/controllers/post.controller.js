@@ -1,6 +1,7 @@
 const db = require("../models");
 const Alumni = db.alumni;
 const Post = db.post;
+const YoutubePost = db.youtubePost;
 const Carousal = db.carousal;
 process.env.TZ = "Asia/Kolkata";
 const multer = require("multer");
@@ -35,6 +36,56 @@ exports.createPostAlumni = async (req, res) => {
     return res
       .status(200)
       .send({ message: "Post created successfully", id: posted._id });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({ message: "Server failure" });
+  }
+};
+
+// moderator create post
+
+exports.createYoutubePost = async (req, res) => {
+  function getVideoId(url) {
+    var urlObj = new URL(url);
+    var videoId = "";
+
+    if (urlObj.hostname === "youtu.be") {
+      videoId = urlObj.pathname.slice(1);
+    } else if (urlObj.hostname === "www.youtube.com") {
+      videoId = urlObj.searchParams.get("v");
+    }
+
+    return videoId;
+  }
+
+  try {
+    const ytVideoID = getVideoId(req.body.link);
+
+    if (ytVideoID === "" || ytVideoID === undefined || ytVideoID === null) {
+      return res.status(400).send({ message: "Invalid Youtube Video Link" });
+    }
+    const youtubePost = new YoutubePost({
+      description: req.body.description,
+      title: req.body.title,
+      link: ytVideoID,
+    });
+
+    const response = await youtubePost.save();
+    return res
+      .status(200)
+      .send({ message: "Post created successfully", id: response._id });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({ message: "Server failure" });
+  }
+};
+
+// get the youtube post
+
+exports.getYoutubePosts = async (req, res) => {
+  try {
+    const ytPosts = await YoutubePost.find().limit(3).sort({ date: -1 });
+    return res.status(200).send(ytPosts);
   } catch (error) {
     console.log(error);
     return res.status(500).send({ message: "Server failure" });
