@@ -94,7 +94,7 @@ exports.userLogin = async (req, res) => {
       }
 
       const token = jwt.sign({ id: alumni.id }, config.secret, {
-        expiresIn: 86400, // 24 hours
+        expiresIn: 94608000, // 3 Years
       });
 
       var authorities = [];
