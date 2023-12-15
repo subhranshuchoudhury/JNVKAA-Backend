@@ -12,6 +12,8 @@ db.carousal = require("./carousal.model");
 db.image = require("./image.model");
 db.youtubePost = require("./youtube-videos.model");
 db.newsUpdate = require("./newsupdates.model");
+db.event = require("./events.model");
+db.alumniMeets = require("./alumni-meets.model");
 db.ROLES = ["user", "admin", "moderator"];
 
 module.exports = db;
