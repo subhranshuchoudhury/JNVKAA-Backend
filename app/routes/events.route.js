@@ -21,6 +21,8 @@ module.exports = function (app) {
 
   app.get("/api/event", controller.getEvents);
 
+  app.get("/api/event/id/:id", controller.getEventById);
+
   app.delete(
     "/api/moderator/event/delete",
     [authJwt.verifyToken, authJwt.isModerator],

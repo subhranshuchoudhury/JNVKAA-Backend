@@ -49,9 +49,20 @@ exports.getEvents = async (req, res) => {
     const events = await Event.find()
       .sort({ created_at: -1 })
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .select("-description");
 
     return res.status(200).send(events);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({ message: "Server failure" });
+  }
+};
+
+exports.getEventById = async (req, res) => {
+  try {
+    const event = await Event.findById(req.params.id);
+    return res.status(200).send(event);
   } catch (error) {
     console.log(error);
     return res.status(500).send({ message: "Server failure" });
