@@ -41,3 +41,19 @@ exports.deleteEventById = async (req, res) => {
     return res.status(500).send({ message: "Server failure" });
   }
 };
+
+exports.getEvents = async (req, res) => {
+  try {
+    const skip = parseInt(req.query.skip) || 0;
+    const limit = parseInt(req.query.limit) || 10;
+    const events = await Event.find()
+      .sort({ created_at: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    return res.status(200).send(events);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({ message: "Server failure" });
+  }
+};

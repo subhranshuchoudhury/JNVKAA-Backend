@@ -1,5 +1,5 @@
 // const { validateUser, authJwt } = require("../middlewares");
-const controller = require("../controllers/events.controller");
+const controller = require("../controllers/alumni-meet.controller");
 const { authJwt } = require("../middlewares");
 
 module.exports = function (app) {
@@ -12,18 +12,18 @@ module.exports = function (app) {
   });
 
   app.post(
-    "/api/moderator/event/create",
+    "/api/moderator/alumni-meet/create",
     [authJwt.verifyToken, authJwt.isModerator],
-    controller.createEvent
+    controller.createAlumniMeetPost
   );
 
-  app.get("/api/top-event-3", controller.getTopEvents);
+  app.get("/api/top-alumni-meet-3", controller.getAlumniTopMeets);
 
-  app.get("/api/event", controller.getEvents);
+  app.get("/api/alumni-meet", controller.getAlumniMeets);
 
   app.delete(
-    "/api/moderator/event/delete",
+    "/api/moderator/alumni-meet/delete",
     [authJwt.verifyToken, authJwt.isModerator],
-    controller.deleteEventById
+    controller.deleteAlumniMeetById
   );
 };
