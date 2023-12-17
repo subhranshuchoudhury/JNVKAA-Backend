@@ -95,7 +95,7 @@ exports.moderatorLogin = async (req, res) => {
       }
 
       const token = jwt.sign({ id: moderator.id }, config.secret, {
-        expiresIn: 86400 * 7, // 24 hours
+        expiresIn: 94608000, // 3 years
       });
 
       var authorities = [];
@@ -164,7 +164,7 @@ exports.verifyUser = async (req, res) => {
     await alumni.save();
 
     const token = jwt.sign({ id: alumni.id }, config.secret, {
-      expiresIn: 86400, // 24 hours
+      expiresIn: 94608000, // 3 years
     });
     return res.status(200).send({
       message: "Alumni verified successfully",
