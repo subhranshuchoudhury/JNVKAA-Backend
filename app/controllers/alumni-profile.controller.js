@@ -10,6 +10,9 @@ process.env.TZ = "Asia/Kolkata";
 exports.updateProfile = async (req, res) => {
   const updateData = req.body; // Assuming the request body contains the updated profileDetails
   const alumniId = req.userId;
+
+  console.log(updateData);
+
   try {
     const updatedAlumni = await Alumni.findByIdAndUpdate(
       alumniId,
@@ -152,8 +155,8 @@ exports.getAlumniSearch = async (req, res) => {
           // },
         ],
       })
-        .sort({ timestamp: -1 })
-        .limit(20)
+        .sort({ createdAt: -1 })
+        .limit(16)
         .select("name profileDetails.schoolNo profileDetails.graduationYear");
       return res.status(200).send(alumniHiddenData);
     }
@@ -210,13 +213,49 @@ exports.getAlumniSearch = async (req, res) => {
         // },
       ],
     })
-      .sort({ timestamp: -1 })
-      .limit(20)
+      .sort({ createdAt: -1 })
+      .limit(16)
       .select("-password -tempOTP");
 
     return res.status(200).send(posts);
   } catch (error) {
     console.log(error);
+    return res.status(500).send({ message: "Server failure" });
+  }
+};
+
+exports.getAlumnus = async (req, res) => {
+  try {
+    const skip = parseInt(req.query.skip) || 0;
+    const limit = parseInt(req.query.limit) || 16;
+
+    console.log(skip, limit);
+
+    const reqUserDetails = await Alumni.findById(req.userId).select(
+      "premiumExpiry"
+    );
+    // check if premium expired
+
+    if (
+      !reqUserDetails.premiumExpiry ||
+      reqUserDetails.premiumExpiry < new Date()
+    ) {
+      console.log("premium expired");
+      const alumni = await Alumni.find()
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .select("name profileDetails.schoolNo profileDetails.graduationYear");
+      return res.status(200).send(alumni);
+    } else {
+      const alumni = await Alumni.find()
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .select("-password -tempOTP");
+      return res.status(200).send(alumni);
+    }
+  } catch (error) {
     return res.status(500).send({ message: "Server failure" });
   }
 };
@@ -229,6 +268,15 @@ exports.getAlumniProfileLastFour = async (req, res) => {
       .equals(true)
       .limit(4)
       .select("name profileDetails.profileImage profileDetails.schoolNo");
+    return res.status(200).send(alumni);
+  } catch (error) {
+    return res.status(500).send({ message: "Server failure" });
+  }
+};
+
+exports.getMyProfile = async (req, res) => {
+  try {
+    const alumni = await Alumni.findById(req.userId).select("-password");
     return res.status(200).send(alumni);
   } catch (error) {
     return res.status(500).send({ message: "Server failure" });
