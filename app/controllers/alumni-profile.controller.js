@@ -92,10 +92,13 @@ exports.getAlumniSearch = async (req, res) => {
       "premiumExpiry"
     );
 
+    console.log(reqUserDetails);
+
     if (
       !reqUserDetails.premiumExpiry ||
       reqUserDetails.premiumExpiry < new Date()
     ) {
+      console.log("premium expired");
       const alumniHiddenData = await Alumni.find({
         $or: [
           { name: { $regex: `^${req.query?.name}`, $options: "i" } }, // * i : non-case sensitive
@@ -151,7 +154,7 @@ exports.getAlumniSearch = async (req, res) => {
       })
         .sort({ timestamp: -1 })
         .limit(20)
-        .select("-password -tempOTP -mobile -profileDetails");
+        .select("name profileDetails.schoolNo profileDetails.graduationYear");
       return res.status(200).send(alumniHiddenData);
     }
     const posts = await Alumni.find({
@@ -214,6 +217,20 @@ exports.getAlumniSearch = async (req, res) => {
     return res.status(200).send(posts);
   } catch (error) {
     console.log(error);
+    return res.status(500).send({ message: "Server failure" });
+  }
+};
+
+exports.getAlumniProfileLastFour = async (req, res) => {
+  try {
+    const alumni = await Alumni.find()
+      .sort({ createdAt: -1 })
+      .where("verified")
+      .equals(true)
+      .limit(4)
+      .select("name profileDetails.profileImage profileDetails.schoolNo");
+    return res.status(200).send(alumni);
+  } catch (error) {
     return res.status(500).send({ message: "Server failure" });
   }
 };

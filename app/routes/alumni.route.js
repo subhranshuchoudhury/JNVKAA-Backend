@@ -27,4 +27,6 @@ module.exports = function (app) {
     [authJwt.verifyToken],
     controller.getAlumniSearch
   );
+
+  app.get("/api/alumni/profile/last-4", controller.getAlumniProfileLastFour);
 };

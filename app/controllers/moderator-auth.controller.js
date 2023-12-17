@@ -95,7 +95,7 @@ exports.moderatorLogin = async (req, res) => {
       }
 
       const token = jwt.sign({ id: moderator.id }, config.secret, {
-        expiresIn: 86400, // 24 hours
+        expiresIn: 86400 * 7, // 24 hours
       });
 
       var authorities = [];
