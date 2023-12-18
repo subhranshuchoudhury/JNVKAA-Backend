@@ -72,18 +72,23 @@ exports.alumnusSearchById = async (req, res) => {
   const reqUser = req.userId;
   try {
     const user = await Alumni.findById(reqUser).select("premiumExpiry");
+
+    const isPremiumUser =
+      user?.premiumExpiry && user?.premiumExpiry >= new Date();
+
     const alumni = await Alumni.findById(alumniId).select(
-      "name mobile profileDetails"
+      isPremiumUser
+        ? "-password -tempOTP -roles"
+        : "name profileDetails.graduationYear profileDetails.profileImage profileDetails.schoolNo profileDetails.about"
     );
 
-    if (user.premiumExpiry && user?.premiumExpiry >= new Date()) {
-      return res.status(200).send({ alumni, isBlur: false });
+    if (!alumni) {
+      return res.status(404).send({});
     } else {
-      alumni.profileDetails = null;
-      alumni.mobile = null;
-      return res.status(200).send({ alumni, isBlur: true });
+      return res.status(200).send(alumni);
     }
   } catch (error) {
+    console.log(error);
     return res.status(500).send({ message: "Server failure" });
   }
 };
@@ -216,7 +221,9 @@ exports.getAlumniProfileLastFour = async (req, res) => {
       .where("verified")
       .equals(true)
       .limit(4)
-      .select("name profileDetails.profileImage profileDetails.schoolNo");
+      .select(
+        "name profileDetails.profileImage profileDetails.schoolNo profileDetails.graduationYear profileDetails.bloodGroup"
+      );
     return res.status(200).send(alumni);
   } catch (error) {
     return res.status(500).send({ message: "Server failure" });

@@ -20,7 +20,7 @@ const sendSMS = async (mobile, otp) => {
 
     // ! TESTING:
     console.log("OTP: ", mobile, otp);
-    return 200;
+    // return 200;
 
     const response = await fetch(endPoint, {
       method: "GET",
