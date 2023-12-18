@@ -95,74 +95,13 @@ exports.getAlumniSearch = async (req, res) => {
       "premiumExpiry"
     );
 
-    console.log(reqUserDetails);
+    const isNotPremiumUser =
+      !reqUserDetails?.premiumExpiry ||
+      reqUserDetails?.premiumExpiry < new Date();
 
-    if (
-      !reqUserDetails.premiumExpiry ||
-      reqUserDetails.premiumExpiry < new Date()
-    ) {
-      console.log("premium expired");
-      const alumniHiddenData = await Alumni.find({
-        $or: [
-          { name: { $regex: `^${req.query?.name}`, $options: "i" } }, // * i : non-case sensitive
-          {
-            mobile: { $regex: `^${req.query?.mobile}`, $options: "i" },
-          },
-          {
-            "profileDetails.graduationYear": {
-              $regex: `^${req.query?.graduationyear}`,
-              $options: "i",
-            },
-          },
-          {
-            "profileDetails.bloodGroup": {
-              $regex: `^${req.query?.bloodgroup}`,
-              $options: "i",
-            },
-          },
-          {
-            "profileDetails.schoolNo": {
-              $regex: `^${req.query?.schoolno}`,
-              $options: "i",
-            },
-          },
-
-          {
-            "profileDetails.whatsAppNo": {
-              $regex: `^${req.query?.whatsappno}`,
-              $options: "i",
-            },
-          },
-          {
-            "profileDetails.mailId": {
-              $regex: `^${req.query?.mailid}`,
-              $options: "i",
-            },
-          },
-          {
-            "profileDetails.profession": {
-              $regex: `^${req.query?.profession}`,
-              $options: "i",
-            },
-          },
-          // {
-          //   hashtag: {
-          //     $elemMatch: {
-          //       $regex: `^${req.query?.hashtag}`,
-          //       $options: "i",
-          //     },
-          //   },
-          // },
-        ],
-      })
-        .sort({ createdAt: -1 })
-        .limit(16)
-        .select("name profileDetails.schoolNo profileDetails.graduationYear");
-      return res.status(200).send(alumniHiddenData);
-    }
-    const posts = await Alumni.find({
+    const alumniHiddenData = await Alumni.find({
       $or: [
-        { name: { $regex: `^${req.query?.name}`, $options: "i" } }, // * i : non-case sensitive
+        { name: { $regex: `${req.query?.name}`, $options: "i" } }, // * i : non-case sensitive
         {
           mobile: { $regex: `^${req.query?.mobile}`, $options: "i" },
         },
@@ -203,6 +142,12 @@ exports.getAlumniSearch = async (req, res) => {
             $options: "i",
           },
         },
+        {
+          "profileDetails.address": {
+            $regex: `${req.query?.address}`,
+            $options: "i",
+          },
+        },
         // {
         //   hashtag: {
         //     $elemMatch: {
@@ -215,9 +160,12 @@ exports.getAlumniSearch = async (req, res) => {
     })
       .sort({ createdAt: -1 })
       .limit(16)
-      .select("-password -tempOTP");
-
-    return res.status(200).send(posts);
+      .select(
+        isNotPremiumUser
+          ? "name profileDetails.schoolNo profileDetails.graduationYear profileDetails.profileImage"
+          : "-password -tempOTP"
+      );
+    return res.status(200).send(alumniHiddenData);
   } catch (error) {
     console.log(error);
     return res.status(500).send({ message: "Server failure" });
@@ -237,15 +185,16 @@ exports.getAlumnus = async (req, res) => {
     // check if premium expired
 
     if (
-      !reqUserDetails.premiumExpiry ||
-      reqUserDetails.premiumExpiry < new Date()
+      !reqUserDetails?.premiumExpiry ||
+      reqUserDetails?.premiumExpiry < new Date()
     ) {
-      console.log("premium expired");
       const alumni = await Alumni.find()
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
-        .select("name profileDetails.schoolNo profileDetails.graduationYear");
+        .select(
+          "name profileDetails.schoolNo profileDetails.graduationYear profileDetails.profileImage"
+        );
       return res.status(200).send(alumni);
     } else {
       const alumni = await Alumni.find()
