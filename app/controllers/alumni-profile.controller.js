@@ -11,8 +11,6 @@ exports.updateProfile = async (req, res) => {
   const updateData = req.body; // Assuming the request body contains the updated profileDetails
   const alumniId = req.userId;
 
-  console.log(updateData);
-
   try {
     const updatedAlumni = await Alumni.findByIdAndUpdate(
       alumniId,
@@ -24,11 +22,31 @@ exports.updateProfile = async (req, res) => {
       return res.status(404).json({ message: "Alumni not found" });
     }
 
-    const allDetailsFilled = Object.values(updatedAlumni.profileDetails).every(
-      (value) => value !== null
-    );
+    updatedAlumni.profileDetails.isProfileCompleted = true;
 
-    updatedAlumni.profileDetails.isProfileCompleted = allDetailsFilled;
+    const keysToExclude = [
+      "instagram",
+      "linkedIn",
+      "isProfileCompleted",
+      "profileImage",
+      "premiumExpiry",
+      "location",
+      "facebook",
+    ];
+
+    for (const key in updatedAlumni.profileDetails) {
+      if (updatedAlumni.profileDetails.hasOwnProperty(key)) {
+        if (keysToExclude.includes(key)) {
+          continue; // Skip checking for specified keys
+        }
+
+        const value = updatedAlumni.profileDetails[key];
+        if (value === "" || value === undefined || value === null) {
+          updatedAlumni.profileDetails.isProfileCompleted = false;
+          break;
+        }
+      }
+    }
 
     await updatedAlumni.save();
 

@@ -124,7 +124,6 @@ exports.getPosts = async (req, res) => {
 // get post by id
 
 exports.getPostById = async (req, res) => {
-  console.log("hello");
   try {
     const { id } = req.params;
     const post = await Post.findById(id);

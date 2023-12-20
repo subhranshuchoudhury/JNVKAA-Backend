@@ -10,6 +10,7 @@ const AlumniMeets = mongoose.model(
     image: { type: String, required: true },
     link: { type: String, required: true },
     created_at: { type: Date, default: Date.now },
+    views: { type: Number, default: 0 },
   })
 );
 

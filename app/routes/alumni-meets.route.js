@@ -21,6 +21,8 @@ module.exports = function (app) {
 
   app.get("/api/alumni-meet", controller.getAlumniMeets);
 
+  app.get("/api/alumni-meet/id/:id", controller.getAlumniMeetByID);
+
   app.delete(
     "/api/moderator/alumni-meet/delete",
     [authJwt.verifyToken, authJwt.isModerator],

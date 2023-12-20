@@ -35,6 +35,19 @@ exports.getAlumniMeets = async (req, res) => {
     return res.status(500).send({ message: "Server failure" });
   }
 };
+exports.getAlumniMeetByID = async (req, res) => {
+  try {
+    const alumniMeet = await AlumniMeet.findById(req.params.id);
+    if (alumniMeet) {
+      alumniMeet.views += 1;
+      await alumniMeet.save();
+    }
+    return res.status(200).send(alumniMeet);
+  } catch (error) {
+    console.log("ALUMNI CONTROLLER: ", error);
+    return res.status(500).send({ message: "Server failure" });
+  }
+};
 exports.deleteAlumniMeetById = async (req, res) => {
   try {
     const response = await AlumniMeet.findByIdAndDelete(req.body.id);
