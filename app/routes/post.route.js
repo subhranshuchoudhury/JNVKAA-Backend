@@ -31,8 +31,6 @@ module.exports = function (app) {
     controller.createYoutubePost
   );
 
-  app.get("/api/post/youtube", controller.getYoutubePosts);
-
   app.get("/api/post/latest", [authJwt.verifyToken], controller.getLatestPosts);
 
   app.get("/api/posts", [authJwt.verifyToken], controller.getPosts);

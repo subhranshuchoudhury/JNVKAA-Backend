@@ -76,7 +76,7 @@ exports.updateProfileAdmin = async (req, res) => {
     }
 
     return res.json({
-      message: "ProfileDetails updated successfully",
+      message: "Profile Details updated successfully",
       alumni: updatedAlumni,
     });
   } catch (error) {
@@ -250,7 +250,9 @@ exports.getAlumniProfileLastFour = async (req, res) => {
 
 exports.getMyProfile = async (req, res) => {
   try {
-    const alumni = await Alumni.findById(req.userId).select("-password");
+    const alumni = await Alumni.findById(req.userId).select(
+      "-password -tempOTP"
+    );
     return res.status(200).send(alumni);
   } catch (error) {
     return res.status(500).send({ message: "Server failure" });

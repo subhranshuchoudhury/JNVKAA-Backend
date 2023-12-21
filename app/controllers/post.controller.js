@@ -80,18 +80,6 @@ exports.createYoutubePost = async (req, res) => {
   }
 };
 
-// get the youtube post
-
-exports.getYoutubePosts = async (req, res) => {
-  try {
-    const ytPosts = await YoutubePost.find().limit(3).sort({ date: -1 });
-    return res.status(200).send(ytPosts);
-  } catch (error) {
-    console.log(error);
-    return res.status(500).send({ message: "Server failure" });
-  }
-};
-
 // get latest posts
 
 exports.getLatestPosts = async (req, res) => {

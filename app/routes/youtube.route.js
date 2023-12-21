@@ -11,4 +11,8 @@ module.exports = function (app) {
     next();
   });
   app.get("/api/moderator/post/youtube/id/:id", controller.getYoutubePostById);
+
+  app.get("/api/post/youtube", controller.getTopYoutubePosts);
+
+  app.get("/api/post/youtube/all", controller.getYoutubePosts);
 };

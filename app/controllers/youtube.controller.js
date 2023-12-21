@@ -64,10 +64,9 @@ exports.getYoutubePosts = async (req, res) => {
     const skip = parseInt(req.query.skip) || 0;
     const limit = parseInt(req.query.limit) || 10;
     const events = await YoutubePost.find()
-      .sort({ created_at: -1 })
+      .sort({ date: -1 })
       .skip(skip)
-      .limit(limit)
-      .select("-description");
+      .limit(limit);
 
     return res.status(200).send(events);
   } catch (error) {
