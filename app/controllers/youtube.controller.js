@@ -39,7 +39,12 @@ exports.createYoutubePost = async (req, res) => {
 
 exports.getTopYoutubePosts = async (req, res) => {
   try {
-    const topYoutubePost = await YoutubePost.find().sort({ date: -1 }).limit(3);
+    const skip = parseInt(req.query.skip) || 0;
+    const limit = parseInt(req.query.limit) || 3;
+    const topYoutubePost = await YoutubePost.find()
+      .sort({ date: -1 })
+      .limit(limit)
+      .skip(skip);
     return res.status(200).send(topYoutubePost);
   } catch (error) {
     console.log(error);
