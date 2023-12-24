@@ -21,6 +21,10 @@ const sendSMS = async (mobile, otp) => {
     console.log("OTP: ", mobile, otp);
     // return 200;
 
+    if (process.env.PROD == "false") {
+      return 200;
+    }
+
     const response = await fetch(endPoint, {
       method: "GET",
       headers: headersList,
@@ -108,6 +112,7 @@ exports.userLogin = async (req, res) => {
         mobile: alumni.mobile,
         roles: authorities,
         accessToken: token,
+        isProfileCompleted: alumni.profileDetails.isProfileCompleted,
       });
     } else {
       return res.status(404).send({ message: "Alumni not found" });
@@ -171,6 +176,7 @@ exports.verifyUser = async (req, res) => {
       mobile: alumni.mobile,
       roles: ["ROLE_USER"],
       accessToken: token,
+      isProfileCompleted: alumni.profileDetails.isProfileCompleted,
     });
   } catch (error) {
     console.log(error);
