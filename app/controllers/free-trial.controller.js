@@ -84,3 +84,17 @@ exports.redeem = async (req, res) => {
     });
   }
 };
+
+exports.getTrials = async (req, res) => {
+  try {
+    const freeTrials = await FreeTrials.find()
+      .select("-redeemed_users")
+      .limit(10)
+      .sort({ createdAt: -1 });
+    res.send(freeTrials);
+  } catch (error) {
+    res.status(500).send({
+      message: "Some error occurred while fetching free trials.",
+    });
+  }
+};

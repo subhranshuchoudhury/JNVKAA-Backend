@@ -22,4 +22,6 @@ module.exports = function (app) {
     [authJwt.verifyToken],
     controller.redeem
   );
+
+  app.get("/api/user/free-trials", [authJwt.verifyToken], controller.getTrials);
 };
