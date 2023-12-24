@@ -107,6 +107,7 @@ require("./app/routes/events.route")(app);
 require("./app/routes/alumni-meets.route")(app);
 require("./app/routes/youtube.route")(app);
 require("./app/routes/post.route")(app);
+require("./app/routes/free-trials.route")(app);
 
 const PORT = process.env.PORT || 5000;
 

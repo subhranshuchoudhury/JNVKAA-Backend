@@ -14,6 +14,7 @@ db.youtubePost = require("./youtube-videos.model");
 db.newsUpdate = require("./newsupdates.model");
 db.event = require("./events.model");
 db.alumniMeets = require("./alumni-meets.model");
+db.freeTrials = require("./free-trial.model");
 db.ROLES = ["user", "admin", "moderator"];
 
 module.exports = db;
