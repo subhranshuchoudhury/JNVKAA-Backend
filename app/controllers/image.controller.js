@@ -1,3 +1,5 @@
+const IDValidator = require("../middlewares/validateMongoID");
+const { isValidateInputID } = require("../middlewares/validateMongoID");
 const db = require("../models");
 const Image = db.image;
 process.env.TZ = "Asia/Kolkata";
@@ -50,6 +52,11 @@ exports.uploadImageServer = async (req, res) => {
 exports.getImage = async (req, res) => {
   try {
     const id = req.params.id;
+
+    if (!id) return res.status(400).send({ message: "Image id not found" });
+
+    if (!IDValidator.isValidateInputID(id))
+      return res.status(400).send({ message: "Invalid image id" });
 
     const doc = await Image.findById(id);
     if (!doc) return res.status(404).send({ message: "Image not found" });

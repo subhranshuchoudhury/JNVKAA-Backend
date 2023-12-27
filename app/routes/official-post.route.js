@@ -17,11 +17,7 @@ module.exports = function (app) {
     controller.createOfficialPost
   );
 
-  app.get(
-    "/api/user/official/post",
-    [authJwt.verifyToken, authJwt.isModerator],
-    controller.getOfficialPosts
-  );
+  app.get("/api/user/official/posts", controller.getOfficialPosts);
 
   app.get("/api/user/official/post/:id", controller.getOfficialPostByID);
 
