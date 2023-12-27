@@ -13,7 +13,9 @@ const uploadImage = multer().single("image");
 
 exports.createPostAlumni = async (req, res) => {
   try {
-    const alumni = await Alumni.findById(req.userId).select("name");
+    const alumni = await Alumni.findById(req.userId).select(
+      "name profileDetails.isProfileCompleted"
+    );
 
     if (!alumni) {
       return res.status(404).send({ message: "User not found" });
