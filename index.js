@@ -102,11 +102,13 @@ db.mongoose
 require("./app/routes/alumni-auth.route")(app);
 require("./app/routes/alumni.route")(app);
 require("./app/routes/moderator-auth.route")(app);
+require("./app/routes/image.route")(app);
 require("./app/routes/newsupdate.route")(app);
 require("./app/routes/events.route")(app);
 require("./app/routes/alumni-meets.route")(app);
 require("./app/routes/youtube.route")(app);
 require("./app/routes/post.route")(app);
+require("./app/routes/official-post.route")(app);
 require("./app/routes/free-trials.route")(app);
 
 const PORT = process.env.PORT || 5000;

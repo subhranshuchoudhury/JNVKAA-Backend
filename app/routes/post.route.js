@@ -1,6 +1,5 @@
 const { authJwt } = require("../middlewares");
 const controller = require("../controllers/post.controller");
-const imageController = require("../controllers/image.controller");
 module.exports = function (app) {
   app.use(function (req, res, next) {
     res.header(
@@ -12,13 +11,8 @@ module.exports = function (app) {
 
   // * define routes here.
 
-  app.post(
-    "/api/user/post/image",
-    [authJwt.verifyToken],
-    imageController.uploadImageServer
-  );
+  // Alumni Route
 
-  app.get("/api/user/post/image/:id", imageController.getImage);
   app.post(
     "/api/user/post/create",
     [authJwt.verifyToken],
@@ -31,15 +25,11 @@ module.exports = function (app) {
     controller.createYoutubePost
   );
 
+  // Alumni Route End
+
   app.get("/api/post/latest", [authJwt.verifyToken], controller.getLatestPosts);
 
   app.get("/api/posts", [authJwt.verifyToken], controller.getPosts);
-
-  app.delete(
-    "/api/user/post/image/delete",
-    [authJwt.verifyToken],
-    imageController.deleteImage
-  );
 
   app.get(
     "/api/post/search/query",

@@ -1,6 +1,7 @@
 const db = require("../models");
 const Alumni = db.alumni;
 const Post = db.post;
+const OfficialPost = db.officialPost;
 const YoutubePost = db.youtubePost;
 const Carousal = db.carousal;
 process.env.TZ = "Asia/Kolkata";
@@ -16,6 +17,12 @@ exports.createPostAlumni = async (req, res) => {
 
     if (!alumni) {
       return res.status(404).send({ message: "User not found" });
+    }
+
+    if (!alumni.profileDetails.isProfileCompleted) {
+      return res
+        .status(400)
+        .send({ message: "Please complete your profile first" });
     }
 
     const post = new Post({
