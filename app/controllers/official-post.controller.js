@@ -10,7 +10,7 @@ exports.createOfficialPost = async (req, res) => {
       description: req.body.description,
       links: req.body.links,
       date: req.body.date,
-      imageLink: req.body.imageSrcId,
+      imageLink: req.body.imageLink,
       externalLink: req.body.externalLink,
     });
 
