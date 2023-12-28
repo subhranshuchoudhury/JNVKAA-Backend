@@ -224,7 +224,7 @@ exports.postCarousal = async (req, res) => {
 
 exports.deletePost = async (req, res) => {
   try {
-    const { id } = req.body;
+    const { id } = req.params;
     const post = await Post.findById(id).select("author");
     if (!post) {
       return res.status(404).send({ message: "Post not found" });
@@ -244,7 +244,7 @@ exports.deletePost = async (req, res) => {
 
 exports.deletePostByModerator = async (req, res) => {
   try {
-    const { id } = req.body;
+    const { id } = req.params;
     const post = await Post.findById(id).select("author");
     if (!post) {
       return res.status(404).send({ message: "Post not found" });

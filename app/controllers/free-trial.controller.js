@@ -98,3 +98,19 @@ exports.getTrials = async (req, res) => {
     });
   }
 };
+
+exports.deactivateFreeTrial = async (req, res) => {
+  try {
+    const freeTrial = await FreeTrials.findById(req.params.id);
+    if (!freeTrial) {
+      return res.status(404).send({ message: "Free Trial Not found." });
+    }
+    freeTrial.isActivated = false;
+    await freeTrial.save();
+    return res.status(200).send({ message: "Free Trial deactivated." });
+  } catch (error) {
+    return res.status(500).send({
+      message: "Some error occurred while deactivating free trial.",
+    });
+  }
+};

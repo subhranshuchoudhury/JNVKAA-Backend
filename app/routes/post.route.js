@@ -46,7 +46,7 @@ module.exports = function (app) {
   );
 
   app.delete(
-    "/api/moderator/post/delete",
+    "/api/moderator/post/delete/:id",
     [authJwt.verifyToken, authJwt.isModerator],
     controller.deletePostByModerator
   );

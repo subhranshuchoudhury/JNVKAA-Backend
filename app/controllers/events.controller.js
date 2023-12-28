@@ -34,7 +34,10 @@ exports.getTopEvents = async (req, res) => {
 
 exports.deleteEventById = async (req, res) => {
   try {
-    const response = await Event.deleteOne({ _id: req.body.id });
+    const response = await Event.deleteOne({ _id: req.params.id });
+    if (!response) {
+      return res.status(404).send({ message: "Event not found" });
+    }
     return res.status(200).send({ message: "Event deleted successfully" });
   } catch (error) {
     console.log(error);

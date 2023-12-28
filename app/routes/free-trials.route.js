@@ -24,4 +24,10 @@ module.exports = function (app) {
   );
 
   app.get("/api/user/free-trials", [authJwt.verifyToken], controller.getTrials);
+
+  app.delete(
+    "/api/user/free-trial/deactivate/:id",
+    [authJwt.verifyToken],
+    controller.deactivateFreeTrial
+  );
 };

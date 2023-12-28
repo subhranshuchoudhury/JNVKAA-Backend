@@ -50,7 +50,10 @@ exports.getAlumniMeetByID = async (req, res) => {
 };
 exports.deleteAlumniMeetById = async (req, res) => {
   try {
-    const response = await AlumniMeet.findByIdAndDelete(req.body.id);
+    const response = await AlumniMeet.findByIdAndDelete(req.params.id);
+    if (!response) {
+      return res.status(404).send({ message: "Alumni Meet not found" });
+    }
     return res
       .status(200)
       .send({ message: "Alumni Meet deleted successfully" });

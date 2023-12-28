@@ -30,7 +30,11 @@ exports.getNewsUpdates = async (req, res) => {
 
 exports.deleteNewsUpdate = async (req, res) => {
   try {
-    const response = await NewsUpdate.deleteOne({ _id: req.body.id });
+    const response = await NewsUpdate.deleteOne({ _id: req.params.id });
+
+    if (!response) {
+      return res.status(404).send({ message: "News Update not found" });
+    }
     return res
       .status(200)
       .send({ message: "News Update deleted successfully" });

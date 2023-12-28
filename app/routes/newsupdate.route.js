@@ -19,7 +19,7 @@ module.exports = function (app) {
   app.get("/api/newsupdate", controller.getNewsUpdates);
 
   app.delete(
-    "/api/moderator/newsupdate/delete",
+    "/api/moderator/newsupdate/delete/:id",
     [authJwt.verifyToken, authJwt.isModerator],
     controller.deleteNewsUpdate
   );
