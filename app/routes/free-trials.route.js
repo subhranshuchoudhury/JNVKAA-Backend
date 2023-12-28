@@ -27,7 +27,7 @@ module.exports = function (app) {
 
   app.delete(
     "/api/user/free-trial/deactivate/:id",
-    [authJwt.verifyToken],
+    [authJwt.verifyToken, authJwt.isModerator],
     controller.deactivateFreeTrial
   );
 };
