@@ -71,6 +71,32 @@ exports.userRegister = async (req, res) => {
   }
 };
 
+exports.userRegisterByModerator = async (req, res) => {
+  const alumni = new Alumni({
+    name: req.body.name,
+    password: bcrypt.hashSync(req.body.password, 8),
+    mobile: req.body.mobile,
+    verified: true,
+    tempOTP: {
+      otp: null,
+      createdAt: null,
+    },
+  });
+
+  try {
+    const roles = await Role.find({
+      name: { $in: "alumni" }, // ! Caution : "alumni" should not be changed.
+    });
+    alumni.roles = roles.map((role) => role._id);
+    await alumni.save();
+    return res.status(200).send({ message: "Alumni registered successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: error });
+    return;
+  }
+};
+
 exports.userLogin = async (req, res) => {
   try {
     const alumni = await Alumni.findOne({

@@ -18,6 +18,13 @@ module.exports = function (app) {
   );
 
   app.post(
+    "/api/user/auth/register-moderator",
+    [validateUser.checkDuplicateMobile],
+    [authJwt.verifyToken, authJwt.isModerator],
+    controller.userRegisterByModerator
+  );
+
+  app.post(
     "/api/user/auth/send-otp",
     [validateUser.validateSendOTP],
     controller.sendOTPUser
