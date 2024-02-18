@@ -4,7 +4,7 @@
   "description": "This is the frontend code for color prediction application, a gambling application.",
   "main": "index.js",
   "engines": {
-    "node": "18.x"
+    "node": "20.x"
   },
   "author": "Subhranshu Choudhury",
   "scripts": {
