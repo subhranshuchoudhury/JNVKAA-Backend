@@ -111,6 +111,7 @@ require("./app/routes/youtube.route")(app);
 require("./app/routes/post.route")(app);
 require("./app/routes/official-post.route")(app);
 require("./app/routes/free-trials.route")(app);
+require("./app/routes/support.route")(app);
 
 const PORT = process.env.PORT || 5000;
 
