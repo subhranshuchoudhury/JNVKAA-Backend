@@ -16,11 +16,7 @@ module.exports = function (app) {
         [validateUser.validateRegisterTeacher, validateUser.checkDuplicateMobileTeacher],
         controller.teacherRegister
     );
-
     app.post("/api/teacher/auth/login/", validateUser.validateLogin, controller.teacherLogin);
-
-    // app.post("/api/teacher/auth/verify/", [authJwt.verifyToken, authJwt.isModerator], controller.verifyTeacherByModerator);
-    app.post("/api/teacher/auth/verify/", controller.verifyTeacherByModerator);
-
-    app.get("/api/teacher/auth/pendingverification/", controller.showPendingVerificationTeachers);
+    app.post("/api/teacher/auth/verify/", [authJwt.verifyToken, authJwt.isModerator], controller.verifyTeacherByModerator);
+    app.get("/api/teacher/auth/pendingverification/", [authJwt.verifyToken, authJwt.isModerator], controller.showPendingVerificationTeachers);
 };
