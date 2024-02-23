@@ -154,66 +154,41 @@ exports.teacherLogin = async (req, res) => {
     }
 };
 
-exports.verifyUser = async (req, res) => {
+exports.verifyTeacherByModerator = async (req, res) => {
     try {
-        const alumni = await Alumni.findOne({
-            mobile: req.body.mobile,
-        });
-
-        if (!alumni) {
-            return res.status(404).send({ message: "Alumni not found" });
+        const teacher = await Teacher.findOne({ mobile: req.body.mobile }).select("mobile verified");
+        if (!teacher) {
+            return res.status(404).send({ message: "Teacher not found" });
         }
 
-        if (alumni.verified) {
-            return res.status(400).send({ message: "Alumni already verified" });
+        const choice = req.body.choice;
+        if (!choice) {
+            await teacher.deleteOne();
+        } else {
+            teacher.verified = choice;
+            await teacher.save();
         }
 
-        if (!alumni.tempOTP.otp) {
-            return res.status(400).send({ message: "Kindly resend OTP." });
-        }
+        return res.status(200).send({ message: `Teacher marked as ${choice ? "verified" : "unverified"}` });
 
-        const passwordIsValid = bcrypt.compareSync(
-            req.body.otp,
-            alumni.tempOTP.otp
-        );
-
-        if (!passwordIsValid) {
-            // alumni.tempOTP.otp = null;
-            // await alumni.save();
-            return res.status(401).send({ message: "Wrong OTP" });
-        }
-
-        const timeDiff = Math.abs(
-            new Date().getTime() - alumni.tempOTP.createdAt.getTime()
-        );
-        const diffMinutes = Math.ceil(timeDiff / (1000 * 60));
-        if (diffMinutes > 5) {
-            return res.status(400).send({
-                message: "OTP expired. Please resend OTP again",
-            });
-        }
-
-        alumni.verified = true;
-        alumni.tempOTP.otp = null;
-        await alumni.save();
-
-        const token = jwt.sign({ id: alumni.id }, config.secret, {
-            expiresIn: 94608000, // 3 years
-        });
-        return res.status(200).send({
-            message: "Alumni verified successfully",
-            name: alumni.name,
-            mobile: alumni.mobile,
-            roles: ["ROLE_USER"],
-            accessToken: token,
-            isProfileCompleted: alumni.profileDetails.isProfileCompleted,
-        });
     } catch (error) {
         console.log(error);
         res.status(500).send({ message: error });
         return;
     }
 };
+
+exports.showPendingVerificationTeachers = async (req, res) => {
+    try {
+        const teachers = await Teacher.find({ verified: false })
+        res.status(200).send(teachers);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: "Server error" });
+        return;
+    }
+
+}
 
 exports.sendOTPUser = async (req, res) => {
     try {
