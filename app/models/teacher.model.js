@@ -12,11 +12,11 @@ const Teacher = mongoose.model(
         profileDetails: {
             isProfileCompleted: { type: Boolean, default: false },
             profileImage: { type: String, default: null },
-            address: { type: String, default: null },
             whatsappNo: { type: String, default: null },
             joiningYear: { type: String, default: null },
             leavingYear: { type: String, default: null },
             subject: { type: String, default: null },
+            designation: { type: String, default: null },
         },
 
         tempOTP: {

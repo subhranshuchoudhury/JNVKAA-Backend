@@ -118,9 +118,12 @@ exports.getAlumniSearch = async (req, res) => {
       "premiumExpiry"
     );
 
-    const isNotPremiumUser =
+    let isNotPremiumUser =
       !reqUserDetails?.premiumExpiry ||
       reqUserDetails?.premiumExpiry < new Date();
+
+    if (req.isTeacher)
+      isNotPremiumUser = false;
 
     const alumniHiddenData = await Alumni.find({
       $or: [
@@ -224,7 +227,7 @@ exports.getAlumnus = async (req, res) => {
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
-        .select("-password -tempOTP");
+        .select("-password -tempOTP -roles");
       return res.status(200).send(alumni);
     }
   } catch (error) {
@@ -251,7 +254,7 @@ exports.getAlumniProfileLastFour = async (req, res) => {
 exports.getMyProfile = async (req, res) => {
   try {
     const alumni = await Alumni.findById(req.userId).select(
-      "-password -tempOTP"
+      "-password -tempOTP -roles"
     );
     return res.status(200).send(alumni);
   } catch (error) {

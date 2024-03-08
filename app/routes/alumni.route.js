@@ -18,17 +18,17 @@ module.exports = function (app) {
 
   app.post(
     "/api/alumni/search/id",
-    [authJwt.verifyToken],
+    [authJwt.verifyToken, authJwt.haveTeacherRole],
     controller.alumnusSearchById
   );
 
   app.get(
     "/api/alumni/search",
-    [authJwt.verifyToken],
+    [authJwt.verifyToken, authJwt.haveTeacherRole],
     controller.getAlumniSearch
   );
 
-  app.get("/api/alumni/all", [authJwt.verifyToken], controller.getAlumnus);
+  app.get("/api/alumni/all", [authJwt.verifyToken, authJwt.haveTeacherRole], controller.getAlumnus);
 
   app.get("/api/alumni/profile/last-4", controller.getAlumniProfileLastFour);
   app.get(
