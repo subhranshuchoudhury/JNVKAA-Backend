@@ -84,6 +84,7 @@ isTeacher = (req, res, next) => {
 };
 
 haveTeacherRole = (req, res, next) => {
+  console.log("Teacher Role Check");
   Teacher.findById(req.userId)
     .then((user) => {
       if (user) {
@@ -106,7 +107,9 @@ haveTeacherRole = (req, res, next) => {
             return;
           });
       } else {
-        return res.status(404).send({ message: "No Teacher found" });
+        req.isTeacher = false;
+        next()
+        return
       }
     })
     .catch((err) => {

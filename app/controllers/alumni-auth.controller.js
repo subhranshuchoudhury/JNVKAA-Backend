@@ -13,13 +13,15 @@ const sendSMS = async (mobile, otp) => {
       "Cache-Control": "no-cache",
     };
 
-    const endPoint = `https://www.fast2sms.com/dev/bulkV2?authorization=${
-      process.env.FAST_2_SMS_API_KEY
-    }&variables_values=${otp}&route=otp&numbers=${Number(mobile)}`;
+    const endPoint = `https://www.fast2sms.com/dev/bulkV2?authorization=${process.env.FAST_2_SMS_API_KEY
+      }&variables_values=${otp}&route=otp&numbers=${Number(mobile)}`;
 
     // ! TESTING:
     console.log("OTP: ", mobile, otp);
-    // return 200;
+    if (process.env.IS_DEV == "true") {
+
+      return 200;
+    }
 
     if (process.env.PROD == "false") {
       return 200;
@@ -228,9 +230,8 @@ exports.sendOTPUser = async (req, res) => {
       const diffMinutes = Math.ceil(timeDiff / (1000 * 60));
       if (diffMinutes < 5) {
         res.status(400).send({
-          message: `SMS already sent. Please try again after ${
-            5 - diffMinutes
-          } minute(s)`,
+          message: `SMS already sent. Please try again after ${5 - diffMinutes
+            } minute(s)`,
           diffMinutes: 5 - diffMinutes,
         });
         return;

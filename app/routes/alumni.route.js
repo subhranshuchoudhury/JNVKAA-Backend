@@ -36,6 +36,8 @@ module.exports = function (app) {
     [authJwt.verifyToken],
     controller.getMyProfile
   );
+
+  app.get("/api/alumni/birthdays", controller.getBirthdays);
   // app.post(
   //   "/api/alumni/update-my-profile",
   //   [authJwt.verifyToken],

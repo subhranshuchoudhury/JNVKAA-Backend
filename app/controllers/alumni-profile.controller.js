@@ -1,10 +1,6 @@
-const config = require("../config/auth.config");
 const db = require("../models");
 const Alumni = db.alumni;
-const Role = db.role;
-const otpGenerator = require("otp-generator");
-var jwt = require("jsonwebtoken");
-var bcrypt = require("bcryptjs");
+
 process.env.TZ = "Asia/Kolkata";
 
 exports.updateProfile = async (req, res) => {
@@ -91,11 +87,19 @@ exports.alumnusSearchById = async (req, res) => {
   try {
     const user = await Alumni.findById(reqUser).select("premiumExpiry");
 
-    const isPremiumUser =
-      user?.premiumExpiry && user?.premiumExpiry >= new Date();
+    let isExpiredORFailed = !user?.premiumExpiry || user?.premiumExpiry < new Date();
+
+    if (req?.isTeacher) {
+      isExpiredORFailed = false;
+    }
+
+    // const isPremiumUser =
+    //   user?.premiumExpiry && user?.premiumExpiry >= new Date();
+
+
 
     const alumni = await Alumni.findById(alumniId).select(
-      isPremiumUser
+      !isExpiredORFailed
         ? "-password -tempOTP -roles"
         : "name profileDetails.graduationYear profileDetails.profileImage profileDetails.schoolNo profileDetails.about"
     );
@@ -199,6 +203,7 @@ exports.getAlumniSearch = async (req, res) => {
 };
 
 exports.getAlumnus = async (req, res) => {
+  console.log(req);
   try {
     const skip = parseInt(req.query.skip) || 0;
     const limit = parseInt(req.query.limit) || 16;
@@ -210,9 +215,14 @@ exports.getAlumnus = async (req, res) => {
     );
     // check if premium expired
 
+    let isExpiredORFailed = !reqUserDetails?.premiumExpiry || reqUserDetails?.premiumExpiry < new Date();
+
+    if (req?.isTeacher) {
+      isExpiredORFailed = false;
+    }
+
     if (
-      !reqUserDetails?.premiumExpiry ||
-      reqUserDetails?.premiumExpiry < new Date()
+      isExpiredORFailed
     ) {
       const alumni = await Alumni.find()
         .sort({ createdAt: -1 })
@@ -261,3 +271,25 @@ exports.getMyProfile = async (req, res) => {
     return res.status(500).send({ message: "Server failure" });
   }
 };
+
+exports.getBirthdays = async (req, res) => {
+  try {
+
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    let nameAndBirthdays = await Alumni.find().select("name profileDetails.dob");
+    nameAndBirthdays = nameAndBirthdays.filter((alumni) => {
+      if (alumni.profileDetails.dob) {
+        const dob = new Date(alumni.profileDetails.dob);
+        return dob.getDate() === today.getDate() && dob.getMonth() === today.getMonth();
+      }
+    });
+
+    return res.status(200).send(nameAndBirthdays);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error fetching birthdays' });
+  }
+}
