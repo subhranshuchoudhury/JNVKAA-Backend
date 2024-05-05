@@ -54,6 +54,10 @@ exports.teacherRegister = async (req, res) => {
             joiningYear: req.body.joiningYear,
             leavingYear: req.body.leavingYear,
             subject: req.body.subject,
+            profileImage: req.body.profileImage,
+            designation: req.body.designation,
+            whatsappNo: req.body.whatsappNo,
+            isProfileCompleted: true
         },
         tempOTP: {
             otp: null,

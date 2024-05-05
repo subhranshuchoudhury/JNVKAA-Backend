@@ -14,6 +14,10 @@ module.exports = function (app) {
     [authJwt.verifyToken],
     imageController.uploadImageServer
   );
+  app.post(
+    "/api/user/post/image/non-auth",
+    imageController.uploadImageServerNonAuth
+  );
 
   app.get("/api/user/post/image/:id", imageController.getImage);
 

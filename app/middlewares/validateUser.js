@@ -29,6 +29,8 @@ const validateRegister = (req, res, next) => {
 };
 
 const validateRegisterTeacher = (req, res, next) => {
+
+  //'premiumExpiry', 'isProfileCompleted', 'profileImage', 'whatsappNo', 'designation', 'confirmPassword'"
   const schema = z
     .object({
       name: z
@@ -44,6 +46,12 @@ const validateRegisterTeacher = (req, res, next) => {
       joiningYear: z.string().min(4).max(4),
       subject: z.string().min(3).max(30),
       leavingYear: z.string().min(0).max(4).optional(),
+      profileImage: z.string().optional(),
+      designation: z.string().min(3).max(30),
+      whatsappNo: z.string().min(10).max(10),
+      confirmPassword: z.string().min(6),
+      isProfileCompleted: z.boolean(),
+      premiumExpiry: z.any().optional(),
     })
     .strict();
   const result = schema.safeParse(req.body);
