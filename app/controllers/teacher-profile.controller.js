@@ -94,7 +94,7 @@ exports.getTeachers = async (req, res) => {
                 .skip(skip)
                 .limit(limit)
                 .select(
-                    "name profileDetails.joiningYear profileDetails.leavingYear profileDetails.profileImage"
+                    "name profileDetails.joiningYear profileDetails.designation profileDetails.leavingYear profileDetails.profileImage"
                 );
             return res.status(200).send(teacher);
         } else {
