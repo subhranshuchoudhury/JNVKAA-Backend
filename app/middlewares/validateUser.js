@@ -159,7 +159,7 @@ const validateNumOTP = (req, res, next) => {
         .regex(/^[0-9]+$/),
       otp: z
         .string()
-        .length(8)
+        .length(4)
         .regex(/^[0-9]+$/),
     })
     .strict();
@@ -182,7 +182,7 @@ const validateForgetPassword = (req, res, next) => {
         .regex(/^[0-9]+$/),
       otp: z
         .string()
-        .length(8)
+        .length(4)
         .regex(/^[0-9]+$/),
       password: z.string().min(6).max(20),
     })

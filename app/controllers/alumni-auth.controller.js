@@ -238,7 +238,7 @@ exports.sendOTPUser = async (req, res) => {
       }
     }
 
-    const OTP = otpGenerator.generate(8, {
+    const OTP = otpGenerator.generate(4, {
       upperCaseAlphabets: false,
       specialChars: false,
       lowerCaseAlphabets: false,
@@ -247,7 +247,7 @@ exports.sendOTPUser = async (req, res) => {
 
     // const OTP = "99999999";
 
-    alumni.tempOTP.otp = bcrypt.hashSync(OTP, 8);
+    alumni.tempOTP.otp = bcrypt.hashSync(OTP, 4);
     alumni.tempOTP.createdAt = new Date();
 
     const smsResp = await sendSMS(req.body.mobile, OTP);
